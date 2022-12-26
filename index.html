@@ -4,10 +4,32 @@
 <head>
 	<title>Parcel Sandbox</title>
 	<meta charset="UTF-8" />
+        <script src="https://cdn.jsdelivr.net/npm/three@0.119.1/build/three.min.js"></script>
 </head>
  
 
 <body>
+
+<div id="container"></div> 
+<style> #container { width: 100%; height: 100%; } </style> 
+<script> 
+// Set up scene 
+let scene = new THREE.Scene(); 
+let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); 
+let renderer = new THREE.WebGLRenderer();
+ renderer.setSize(window.innerWidth, window.innerHeight);
+ document.getElementById('container').appendChild(renderer.domElement);
+ // Set up organic sphere 
+let geometry = new THREE.IcosahedronGeometry(1, 1);
+ let material = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); 
+let sphere = new THREE.Mesh(geometry, material); scene.add(sphere);
+ // Set up music visualization 
+let audio = new Audio(); audio.src = "music.mp3"; audio.crossOrigin = "anonymous"; audio.controls = true; audio.loop = true; audio.autoplay = true; document.body.appendChild(audio); 
+// Set up audio analyser 
+let analyser = new THREE.AudioAnalyser(audio, 32); 
+// Render scene
+ function render() { requestAnimationFrame(render); let data = analyser.getData(); let average = 0; for (let i = 0; i < data.length; i++) { average += data[i]; } average = average / data.length; sphere.scale.set(average, average, average); renderer.render(scene, camera); } render();
+ </script>
 	
 </body>
 
